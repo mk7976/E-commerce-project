@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+   <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+
+    <title>product view</title>
+    <style>
+
+  </style>
+  </head>
+  <body>
+      <!--    {% load static %}-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a class="navbar-brand" href="#">My Awesome Cart</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+         <li class="nav-item">
+        <a class="nav-link" href="{% url 'checkout' %}">Checkout</a>
+      </li>
+         <li class="nav-item">
+        <a class="nav-link" href="{% url 'Traking status' %}">Tracker</a>
+      </li>
+         <li class="nav-item">
+        <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+      </li>
+               <li class="nav-item">
+                    <a class="nav-link" href="/blog">Blog</a>
+                </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'About Us' %}">About Us</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#" id="clearcart">Clear-Cart</a>
+          <a class="dropdown-item" href="#">Another action</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+
+      </li>
+         <li class="nav-item">
+             <a class="nav-link"  href="#"><span class="c1">0</span></a>
+      </li>
+
+    </ul>
+    
+      <button type="button" id ="popcart" class="btn btn-secondary mx-2" data-container="body" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+<span id="c1">0</span>
+
+
+  </div>
+</nav>
+
+
+
+
+<div id="a{{totalprod}}" class="container my-5">
+  <div class="container my-4">
+    {% if prodid %}
+
+
+    {% for product in prodid %}
+    <div class="row">
+      <div class="col-md-4">
+        <div class="row">
+          <img src="/media/{{product.image}}" width="233px" height="385px">
+        </div>
+        <div class="row">
+          <a href="{% url 'checkout' %}" ><button class="btn btn-primary mx-3">Buy Now</button></a>
+          <button id='pr{{product.product_id}}' class="btn btn-primary cart1">Add To Cart</button>
+        </div>
+
+      </div>
+
+      <div class="col-md-8">
+        <h5 id="productname{{product.product_id}}">{{product.product_name}}</h5>
+        <p><b >Rs.{{product.price}} </b></p>
+        <input type="hidden" id="productprice{{product.product_id}}" value="{{product.price}}">
+        <p>{{product.desc}}</p>
+
+
+      </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+  </div>
+</div>
+
+
+<script>
+
+  console.log("working");
+  total_product = {}
+  countcart = 0;
+  var idstr;
+  const totalcart = document.querySelector(".c1");
+  const popcart = document.querySelector("#c1")
+  const allitemofcart = document.querySelector(".card-text")
+  const viewbtnclass = document.querySelector(".cart1")
+  const totalprod = document.querySelector(".container")
+  let range = totalprod.id.slice(1)
+  TotalOrderofProduct = JSON.parse(localStorage.getItem("TotalOrderofProduct"));
+
+
+  let a = 0
+  let tid = viewbtnclass.id.toString()
+  if (localStorage.getItem('cart1') != null) {
+    var productcart = JSON.parse(localStorage.getItem('cart1'));
+
+    popcart.innerHTML = "Cart(" + productcart[tid] + ")"
+  }
+
+  if (localStorage.getItem('cart1') == null) {
+    var cart = {};
+    var TotalOrderofProduct={}
+    for (let i = 1; i <= (Number(range) + 5); i++) {
+      cart['pr' + i] = 0
+      localStorage.setItem('cart1', JSON.stringify(cart));
+      localStorage.setItem('TotalOrderofProduct', JSON.stringify(TotalOrderofProduct));
+
+
+    }
+    console.log(cart)
+    console.log("kjhjh");
+
+
+  }
+  else {
+    cart = JSON.parse(localStorage.getItem('cart1'));
+    totalorder= JSON.parse(localStorage.getItem('TotalOrderofProduct'));
+    totalquantity = 0
+    for (let j in totalorder) {
+      product = totalorder[j]
+      pqan = product.product_quantity
+      totalquantity = totalquantity + pqan
+
+    }
+    console.log(totalquantity)
+    popcart.innerHTML = "Cart(" + totalquantity + ")"
+    //totalcart.innerHTML="Cart("+countcart+")"
+    //popcart.innerHTML = "Cart(" + a + ")"
+//a
+
+  }
+  // console.log(cart);
+
+
+
+  //const cart11 = document.querySelectorAll(".cart1");
+
+
+  viewbtnclass.addEventListener("click", () => {
+    idstr = viewbtnclass.id
+    //console.log(idstr)
+    document.getElementById(idstr).innerHTML = "<button id='minus" + idstr + "' class='btn btn-primary minus'>-</button> <span id='val" + idstr + "'>" + cart[idstr] + "</span> <button id='plus" + idstr + "' class='btn btn-primary plus'> + </button>"
+
+
+
+    const plusbtn = document.getElementById('plus' + idstr)
+    const minusbtn = document.getElementById('minus' + idstr)
+    const valspan = document.getElementById('val' + idstr)
+    //console.log(item)
+
+
+    plusbtn.addEventListener("click", () => {
+      let plusid = plusbtn.id
+      //console.log(plusid)
+      pbtnid = plusid.slice(4)
+      //console.log(pbtnid)
+      if (cart[pbtnid] >= 0) {
+
+        cart[pbtnid] = cart[pbtnid] + 1
+        valspan.innerHTML = cart[pbtnid]
+        for (let i = 1; i <= (Number(range) + 5); i++) {
+          const idofprname = document.getElementById("productname" + i)
+          //console.log(idofprname)
+          if (idofprname != null) {
+            console.log(idofprname)
+            if (Object.keys(TotalOrderofProduct).length==0) {
+              console.log("000")
+              const idofprprice = document.getElementById("productprice" + i)
+              let pname = idofprname.innerText
+              let pprice = idofprprice.value
+              //console.log(pprice)
+              //console.log(cart)
+              let qan = cart['pr' + i]
+              TotalOrderofProduct["product" + i] = { "product_name": pname, "product_price": pprice, "product_quantity": qan }
+              totalquantity = 0
+              console.log(TotalOrderofProduct)
+              for (let j in TotalOrderofProduct) {
+                product = TotalOrderofProduct[j]
+                pqan = product.product_quantity
+                totalquantity = totalquantity + pqan
+
+              }
+              localStorage.setItem("TotalOrderofProduct", JSON.stringify(TotalOrderofProduct))
+
+
+              popcart.innerHTML = "Cart(" + qan + ")"
+            }
+            else {
+              console.log(TotalOrderofProduct)
+              console.log(111)
+              for (let j in TotalOrderofProduct) {
+                console.log(j)
+
+                if (('product' + i) == j) {
+                  console.log(1)
+                  let product = TotalOrderofProduct['product' + i]
+                  product['product_quantity'] = cart['pr' + i]
+                  popcart.innerHTML = "Cart(" + cart[pbtnid] + ")"
+                  console.log(TotalOrderofProduct)
+                  localStorage.setItem("TotalOrderofProduct", JSON.stringify(TotalOrderofProduct))
+
+                }
+
+                if (Object.keys(TotalOrderofProduct).length>0) {
+                  console.log(100)
+                  const idofprprice = document.getElementById("productprice" + i)
+                  let pname = idofprname.innerText
+                  let pprice = idofprprice.value
+                  //console.log(pprice)
+                  //console.log(cart)
+                  let qan = cart['pr' + i]
+                  TotalOrderofProduct["product" + i] = { "product_name": pname, "product_price": pprice, "product_quantity": qan }
+                  totalquantity = 0
+                  //console.log(total_product)
+                  for (let j in TotalOrderofProduct) {
+                    product = TotalOrderofProduct[j]
+                    pqan = product.product_quantity
+                    totalquantity = totalquantity + pqan
+
+
+                  }
+                  popcart.innerHTML = "Cart(" + totalquantity + ")"
+                  localStorage.setItem("TotalOrderofProduct", JSON.stringify(TotalOrderofProduct))
+
+
+                  //totalcart.innerHTML = a
+
+                  //totalcart.innerHTML="Cart("+countcart+")"
+
+                  //product_qu
+
+
+                }
+                
+              }
+                 
+              //localStorage.setItem("TotalOrderofProduct", JSON.stringify(total_product))
+              
+
+
+            }
+            //localStorage.setItem("TotalOrderofProduct", JSON.stringify(total_product))
+
+
+            //popcart.innerHTML = "Cart(" + cart[pbtnid] + ")"
+          }
+
+          //localStorage.setItem("TotalOrderofProduct", JSON.stringify(TotalOrderofProduct))
+          localStorage.setItem('cart1', JSON.stringify(cart));
+
+        }
+      }
+      
+    })
+
+    minusbtn.addEventListener("click", () => {
+      let minusid = minusbtn.id
+      console.log(minusid)
+      mbtnid = minusid.slice(5)
+      console.log(productcart)
+      if (productcart[mbtnid] >= 0) {
+        cart[mbtnid] = cart[mbtnid] - 1
+        if (cart[mbtnid] === -1) {
+          cart[mbtnid] = cart[mbtnid] + 1
+          valspan.innerHTML = cart[mbtnid]
+          popcart.innerHTML = "Cart(" + cart[mbtnid] + ")"
+        }
+        else {
+          valspan.innerHTML = cart[mbtnid]
+          for (let i = 1; i <= (Number(range)); i++) {
+            const idofprname = document.getElementById("productname" + i)
+            //console.log(idofprname)
+            if (idofprname != null) {
+              //console.log(idofprname)
+              if (cart['pr' + i] >= 0) {
+                const idofprprice = document.getElementById("productprice" + i)
+                let pname = idofprname.innerText
+                let pprice = idofprprice.value
+                console.log(i,"pprice",pprice)
+
+                let qan = cart['pr' + i]
+                TotalOrderofProduct["product" + i] = { "product_name": pname, "product_price":pprice, "product_quantity": qan }
+                //popcart.innerHTML = "Cart(" + a + ")"
+                a = 0
+                //console.log(total_product)
+                dproduct = TotalOrderofProduct["product" + i]
+                sp = "product" + i
+                if (dproduct.product_quantity == 0) {
+                  delete TotalOrderofProduct[sp]
+                  //console.log(100)
+                }
+
+
+
+              }
+              popcart.innerHTML = "Cart(" + cart[mbtnid] + ")"
+              localStorage.setItem('TotalOrderofProduct', JSON.stringify(TotalOrderofProduct))
+            }
+          }
+          console.log(TotalOrderofProduct)
+
+          popcart.innerHTML = "Cart(" + cart[mbtnid] + ")"
+        }
+      }
+      localStorage.setItem('cart1', JSON.stringify(cart));
+
+    })
+    //document.getElementById('cart').innerHTML = "cart("+b+")"
+
+
+
+    //console.log(idstr)
+    let b = 0
+    // updateCart(cart);
+
+
+
+
+
+
+    //console.log(cart);
+    // totalcart.innerHTML = `Cart(${countcart})`;
+
+
+    //console.log(a)
+    const popcart1 = document.querySelector("#popcart")
+    popcart1.addEventListener("mouseover", () => {
+      document.getElementById("popcart").setAttribute("data-content", "<h5>Cart for your items in the shopping cart</h5>")
+      //console.log(23)
+    })
+
+
+    //console.log(cart);
+  })
+
+  total_itemofcart={}
+for (let key in cart){
+//console.log(key)
+total_itemofcart=[]
+sum=0
+let qty;
+if (cart[key]>0){
+  const productname=document.getElementById("productname"+key.slice(2))
+const productprice=document.getElementById("productprice"+key.slice(2))
+console.log(productname)
+console.log(productprice)
+    total_itemofcart="<h4>"+cart[key]+"</h4>"
+
+
+
+  }
+
+
+  }
+
+
+</script>
+</body>
+</html>

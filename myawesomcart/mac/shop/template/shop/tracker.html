@@ -1,0 +1,130 @@
+{% extends 'shop/basic0.html' %}
+{% block title %} My Awesome Cart Tracker{% endblock %}
+{% block body %}
+<div class="container">
+    <h4 style="color:green; text-align:center;">{{op}}</h4>
+    <p>{{id}}. </p>
+    <div class="col my-4">
+        <h2> Enter Your Order Id and Email address to track your order </h2>
+
+        <form method="post" action="{% url 'track' %}">{% csrf_token %}
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputname">Order Id</label>
+                    <input type="text" class="form-control" id="orderId" name="orderId" required placeholder="Order Id">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required placeholder="Email">
+                </div>
+                <button type="submit" class="btn btn-primary">Track Order</button>
+            </div>
+    </div>
+    <div class="col my-4">
+        <h2>Your Order Status :</h2>
+        <div class="my-4">
+            <ul class="list-group" id="items">
+                {% if text %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{text}}
+
+                    <span class="badge badge-primary badge-pill">{{time}}</span>
+                </li>
+                {% endif %}
+                {% if text1 %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{text1}}
+
+                    <span class="badge badge-primary badge-pill">{{time1}}</span>
+                </li>
+                {% endif %}
+                {% if text2 %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{text2}}
+
+                    <span class="badge badge-primary badge-pill">{{time2}}</span>
+                </li>
+                {% endif %}
+                {% if text3 %}
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{text3}}
+
+                    <span class="badge badge-primary badge-pill">{{time3}}</span>
+                </li>
+                {% endif %}
+                {% if text11 %}
+                <li class="list-group-item d-flex justify-content-between align-items-center color-red">
+                    <p style=color:red;">{{text11}}</p>
+                </li>
+                {% endif %}
+
+            </ul>
+        </div>
+        {% if Trackorderdetails %}
+
+        <h2>Your Order Detail :</h2>
+        <div class="my-4">
+            <ul class="list-group" id="itemss">
+                {% for text,quantity in Trackorderdetails.items %}
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    {{text}}
+
+                    <span class="badge badge-primary badge-pill">quantity-{{quantity}}</span>
+                </li>
+
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+    </div>
+    <script>
+    var totalorder= JSON.parse(localStorage.getItem('TotalOrderofProduct'));
+    var totalquantity = 0
+    for (let j in totalorder) {
+      product = totalorder[j]
+      pqan = product.product_quantity
+      totalquantity = totalquantity + pqan
+
+    }
+    console.log(totalquantity)
+    popcart.innerHTML = "Cart(" + totalquantity + ")"
+
+    </script>
+    {% endblock %}
+    {%block js%}
+    <script>/*
+if (localStorage.getItem('cart') == null) {
+    var cart = {};
+} else {
+    cart = JSON.parse(localStorage.getItem('cart'));
+}
+console.log(cart);
+var sum = 0;
+if ($.isEmptyObject(cart)) {
+    // If object is empty
+    mystr = "<p>Your cart is empty, please add some items before checking out ! </p>"
+    $('#items').append(mystr);
+}
+
+for (item in cart) {
+
+    let name = cart[item][1];
+    let qty = cart[item][0];
+    sum = sum + qty;
+    mystr = `        <li class="list-group-item d-flex justify-content-between align-items-center">
+                   ${name}
+                    <span class="badge badge-primary badge-pill">${qty}</span>
+                </li>`
+    $('#items').append(mystr);
+}
+document.getElementById('cart').innerHTML = sum;
+$('#itemsJson').val(JSON.stringify(cart)); { % if thank % }
+alert("Thanks for ordering with us. Your order id is {{id}}. Use it to track your order using our order tracker")
+localStorage.clear();
+document.location = "/shop"; { % endif % }*/
+
+    </script>
+    {%endblock%}

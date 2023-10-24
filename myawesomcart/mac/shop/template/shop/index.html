@@ -1,0 +1,359 @@
+{% extends 'shop/basic.html' %}
+{% block css %}
+.col-md-3
+{
+display: inline-block;
+margin-left:-4px;
+}
+
+.carousel-indicators .active {
+background-color: blue;
+}
+
+.col-md-3 img{
+
+width: 280px;
+height: 200px;
+}
+
+body .carousel-indicator li{
+background-color: blue;
+}
+
+body .carousel-indicators{
+bottom: 0;
+}
+
+body .carousel-control-prev-icon,
+body .carousel-control-next-icon{
+background-color: blue;
+}
+
+.carousel-control-prev,
+.carousel-control-next{
+padding-top:222px;
+top:auto;
+bottom:auto;
+
+}
+body .no-padding{
+padding-left: 0,
+padding-right: 0;
+}
+
+
+{% endblock %}
+
+{% block body %}
+{% load static %}
+<div class="container">
+
+  <!--Slideshow starts here -->
+  {% for product, range, nSlides in allProds %}
+  <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
+  <div class="row">
+    <div id="demo{{forloop.counter}}" class="col carousel slide my-3" data-ride="carousel">
+      <ul class="carousel-indicators">
+        <li data-target="#demo{{forloop.counter}}" data-slide-to="0" class="active"></li>
+
+        {% for i in range %}
+        <li data-target="#demo{{forloop.parentloop.counter}}" data-slide-to="{{i}}"></li>
+        {% endfor %}
+      </ul>
+
+
+      <div class="container carousel-inner no-padding">
+
+        <div class="carousel-item active">
+
+          {% for i in product %}
+          <div class="col-xs-3 col-sm-3 col-md-3">
+            <div class="card" style="width: 18rem;">
+              <img src='/media/{{i.image}}' class="card-img-top" alt="...">
+              <div class="card-body">
+                <h5 class="card-title" id="product_name{{i.product_id}}">{{i.product_name}}</h5>
+                <h6 id="product_price{{i.product_id}}">{{i.price}}</h6>
+                <p class="card-text" id="div{{lan}}">{{i.desc}}</p>
+                <span id="divpr{{i.product_id}}" class="divpr">
+                  <button id="pr{{i.product_id}}" class="btn btn-primary cart1">Add to Cart</button>
+                </span>
+                <a href="{% url 'ProductView' myid=i.product_id %}">
+                  <button id="qv{{i.id}}" class="btn btn-primary cart">Quick View</button>
+                </a>
+              </div>
+            </div>
+          </div>
+          {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+        </div>
+        <div class="carousel-item">
+          {% endif %}
+
+          {% endfor %}
+        </div>
+
+
+      </div>
+    </div>
+    <!-- left and right controls for the slide -->
+    <a class="carousel-control-prev" href="#demo{{forloop.counter}}" data-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </a>
+    <a class="carousel-control-next" href="#demo{{forloop.counter}}" data-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}
+
+{% block js %}
+<script>/*
+  console.log("working");
+  var total_product = {}
+  //localStorage.setItem("TotalOrderofProduct", JSON.stringify(total_product))
+  totalorder1 = JSON.parse(localStorage.getItem('TotalOrderofProduct'));
+  console.log(totalorder1)
+
+  countcart = 0;
+  var idstr;
+  const totalcart = document.querySelector(".c1");
+  const popcart = document.querySelector("#c1")
+  const allitemofcart = document.querySelector(".card-text")
+  // const cart12 = document.getElementById("pr5")
+  //console.log(cart12)
+
+  let a = 0
+  let range = allitemofcart.id.slice(3)
+  //console.log(range)
+  totalquantity1 = 0
+  for (let j in totalorder1) {
+    product = totalorder1[j]
+    pqan = product.product_quantity
+    totalquantity1 = totalquantity1 + pqan
+
+  }
+  console.log(totalquantity1)
+  popcart.innerHTML = "Cart(" + totalquantity1 + ")"
+
+
+
+
+
+  if (localStorage.getItem('cart1') == null) {
+    localStorage.setItem("TotalOrderofProduct", JSON.stringify(total_product))
+    console.log(111)
+    var cart = {};
+    for (let i = 1; i <= (Number(range)); i++) {
+
+      cart['pr' + i] = 0
+
+
+
+
+
+
+
+    }
+    localStorage.setItem('cart1', JSON.stringify(cart));
+    //localStorage.setItem("cart", JSON.stringify(cart))
+    //console.log(cart)
+    //console.log("kjhjh");
+    //console.log(total_product)
+
+  }
+
+  else {
+    console.log("000")
+    cart = JSON.parse(localStorage.getItem('cart1'));
+    var totalorder = JSON.parse(localStorage.getItem('TotalOrderofProduct'));
+    //console.log(totalorder)
+    var totalquantity = 0
+    for (let j in totalorder) {
+      product = totalorder[j]
+      pqan = product.product_quantity
+      totalquantity = totalquantity + pqan
+
+    }
+    console.log(totalquantity)
+    popcart.innerHTML = "Cart(" + totalquantity + ")"
+
+  }
+  const cart11 = document.querySelectorAll(".cart1");
+  cart11.forEach(cart1 => {
+    cart1.addEventListener("click", () => {
+      idstr = cart1.id.toString();
+      console.log("id  ", idstr)
+      document.getElementById('div' + idstr).innerHTML = "<button id='minus" + idstr + "' class='btn btn-primary minus'>-</button> <span id='val" + idstr + "'>" + cart[idstr] + "</span> <button id='plus" + idstr + "' class='btn btn-primary plus'> + </button>"
+
+
+
+      const plusbtn = document.getElementById('plus' + idstr)
+      const minusbtn = document.getElementById('minus' + idstr)
+      const valspan = document.getElementById('val' + idstr)
+      //console.log(item)
+
+
+      plusbtn.addEventListener("click", () => {
+        let plusid = plusbtn.id
+        //console.log(plusid)
+        pbtnid = plusid.slice(4)
+        console.log(pbtnid)
+        if (cart[pbtnid] >= 0) {
+          console.log(totalorder)
+          cart[pbtnid] = cart[pbtnid] + 1
+          valspan.innerHTML = cart[pbtnid]
+          for (let i = 1; i <= (Number(range)); i++) {
+            const idofprname = document.getElementById("product_name" + i)
+            //console.log(totalorder)
+            if (cart["pr" + i] > 0) {
+              console.log("01")
+              const idofprprice = document.getElementById("product_price" + i)
+              let pname = idofprname.innerText
+              let pprice = idofprprice.innerText
+
+              let qan = cart['pr' + i]
+              total_product["product" + i] = { "product_name": pname, "product_price": pprice, "product_quantity": qan }
+              totalquantity = 0
+              for (let j in total_product) {
+                product = total_product[j]
+                pqan = product.product_quantity
+                totalquantity = totalquantity + pqan
+
+              }
+              popcart.innerHTML = "Cart(" + totalquantity + ")"
+              a = 0
+              console.log("total_product:  ", total_product)
+              console.log("total_order:  ", totalorder1)
+              localStorage.setItem("TotalOrderofProduct", JSON.stringify(total_product))
+              localStorage.setItem('cart1', JSON.stringify(cart));
+
+
+
+            }
+          }
+          console.log(total_product)
+          console.log(Object.keys(total_product).length)
+          localStorage.setItem('cart1', JSON.stringify(cart));
+
+          //popcart.innerHTML = "Cart(" + totalquantity + ")"
+        }
+
+
+      })
+
+      minusbtn.addEventListener("click", () => {
+        let minusid = minusbtn.id
+        //console.log(minusid)
+        mbtnid = minusid.slice(5)
+        if (localStorage.getItem("cart[minusid]") >= 0) {
+          cart[mbtnid] = cart[mbtnid] - 1
+          if (cart[mbtnid] === -1) {
+            cart[mbtnid] = cart[mbtnid] + 1
+            //console.log("huhuh",cart[mbtnid])
+            valspan.innerHTML = cart[mbtnid]
+            //console.log(cart[mbtnid])
+            //popcart.innerHTML = "Cart(" + cart[mbtnid] + ")"
+          }
+          else {
+            valspan.innerHTML = cart[mbtnid]
+            for (let i = 1; i <= (Number(range) + 5); i++) {
+              const idofprname = document.getElementById("product_name" + i)
+              if (idofprname != null) {
+                if (cart['pr' + i] >= 0) {
+
+                  const idofprprice = document.getElementById("product_price" + i)
+                  let pname = idofprname.innerText
+                  let pprice = idofprprice.innerText
+
+                  let qan = cart['pr' + i]
+                  total_product["product" + i] = { "product_name": pname, "product_price": pprice, "product_quantity": qan }
+                  dproduct = total_product["product" + i]
+                  sp = "product" + i
+                  if (dproduct.product_quantity == 0) {
+                    delete total_product[sp]
+                    //console.log(100)
+                  }
+                  totalquantity = 0
+                  for (let j in total_product) {
+                    product = total_product[j]
+                    pqan = product.product_quantity
+                    totalquantity = totalquantity + pqan
+
+                  }
+                  popcart.innerHTML = "Cart(" + totalquantity + ")"
+
+
+                }
+                localStorage.setItem("TotalOrderofProduct", JSON.stringify(total_product))
+
+              }
+            }
+
+
+            //popcart.innerHTML = "Cart(" + cart[mbtnid] + ")"
+          }
+          console.log(total_product)
+        }
+        localStorage.setItem('cart1', JSON.stringify(cart));
+
+      })
+      //document.getElementById('cart').innerHTML = "cart("+b+")"
+
+
+
+      //console.log(idstr)
+      let b = 0
+      // updateCart(cart);
+
+
+
+
+    })
+
+
+
+    //console.log(cart);
+    // totalcart.innerHTML = `Cart(${countcart})`;
+
+
+    // console.log(a)
+    const popcart1 = document.querySelector("#popcart")
+    popcart1.addEventListener("mouseover", () => {
+      document.getElementById("popcart").setAttribute("data-content", "<h5>Cart for your items in the shopping cart</h5>")
+      //console.log(23)
+    })
+
+
+  })
+
+a={}
+a1={"mah":"123","jhj":90}
+a2={"cag":989}
+for (let key in a1){
+  a[key]=a1[key]
+  for (let key in a2){
+  a[key]=a2[key]
+}
+}
+
+
+console.log(a)
+
+*/
+let totalorder=JSON.parse(localStorage.getItem("TotalOrderofProduct"))
+console.log(totalorder)
+totalquantity = 0
+    for (let j in totalorder) {
+        product = totalorder[j]
+        pqan = product.product_quantity
+        totalquantity = totalquantity + pqan
+
+    }
+    console.log(totalquantity)
+    popcart.innerHTML = "Cart(" + totalquantity + ")"
+    
+
+</script>
+
+
+{% endblock %}
